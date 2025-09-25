@@ -19,7 +19,7 @@ namespace Grocery.App.ViewModels
 
         public ObservableCollection<GroceryListItem> MyGroceryListItems { get; set; } = [];
         public ObservableCollection<Product> AvailableProducts { get; set; } = [];
-        private List<Product> _allAvailableProducts = new();
+        private List<Product> alleAvailableProducts = new();
 
 
         [ObservableProperty]
@@ -47,7 +47,7 @@ namespace Grocery.App.ViewModels
                 MyGroceryListItems.Add(item);
             }
             GetAvailableProducts();
-            _allAvailableProducts = AvailableProducts.ToList();
+            alleAvailableProducts = AvailableProducts.ToList();
         }
 
         private void GetAvailableProducts()
@@ -60,7 +60,7 @@ namespace Grocery.App.ViewModels
                     AvailableProducts.Add(p);
                 }
             }
-            _allAvailableProducts = AvailableProducts.ToList();
+            alleAvailableProducts = AvailableProducts.ToList();
         }
 
         [RelayCommand]
@@ -79,10 +79,10 @@ namespace Grocery.App.ViewModels
             product.Stock--;
             _productService.Update(product);
 
-            var existingProductInAll = _allAvailableProducts.FirstOrDefault(p => p.Id == product.Id);
+            var existingProductInAll = alleAvailableProducts.FirstOrDefault(p => p.Id == product.Id);
             if (existingProductInAll != null)
             {
-                _allAvailableProducts.Remove(existingProductInAll);
+                alleAvailableProducts.Remove(existingProductInAll);
             }
             
             FilterProducts(null); // Geen zoekterm, dus toon alles opnieuw minus het toegevoegde product
@@ -105,7 +105,7 @@ namespace Grocery.App.ViewModels
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 // Als de zoekterm leeg is, voeg alle beschikbare producten toe
-                foreach (var product in _allAvailableProducts)
+                foreach (var product in alleAvailableProducts)
                 {
                     AvailableProducts.Add(product);
                 }
@@ -113,7 +113,7 @@ namespace Grocery.App.ViewModels
             else
             {
                 // Filter de producten op basis van de zoekterm
-                var filteredProducts = _allAvailableProducts
+                var filteredProducts = alleAvailableProducts
                                         .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                                         .ToList();
                 foreach (var product in filteredProducts)

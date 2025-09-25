@@ -4,16 +4,23 @@
              xmlns:vm="clr-namespace:Grocery.App.ViewModels"
              x:Class="Grocery.App.Views.ProductView"
              Title="ProductView">
-    
+
     <Shell.TitleView>
         <Grid>
             <Label Text="Producten" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center" />
+            <!-- SearchBar for products -->
+            <SearchBar Grid.Row="0"
+Placeholder="Zoek product..."
+Text="{Binding SearchText}"
+SearchCommand="{Binding SearchProductsCommand}"
+Margin="10"/>
         </Grid>
     </Shell.TitleView>
 
     <Border Stroke="#C49B33" StrokeThickness="4" Padding="10" Margin="10" HorizontalOptions="Center">
         <CollectionView ItemsSource="{Binding Products}" Margin="20" HorizontalOptions="Center">
             <CollectionView.ItemsLayout>
+                
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>
 
@@ -32,7 +39,6 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
