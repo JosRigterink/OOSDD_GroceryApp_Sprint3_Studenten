@@ -1,0 +1,50 @@
+name: MAUI Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - hotfix/*
+      - release/*
+      - infra/runner-toevoegen
+  pull_request:
+    branches:
+      - main
+      - feature/*
+      - hotfix/*
+      - release/*
+      - develop
+
+jobs:
+  test:
+    runs-on: windows-latest  # Veranderd van macOS-latest naar windows-latest
+    steps:
+      - name: Haal de repository op
+        uses: actions/checkout@v4
+
+      - name: Installeer .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Installeer MAUI workloads
+        run: dotnet workload install maui
+
+      - name: Herstel afhankelijkheden
+        run: dotnet restore
+
+      - name: Bouw de applicatie
+        # Voor Windows kun je bouwen voor net8.0-windows of net8.0-android/ios als je specifieke platforms wilt testen.
+        # Hier kiezen we voor net8.0-windows. Pas dit aan als je een ander doelplatform hebt.
+        run: dotnet build Grocery.App/Grocery.App.csproj --configuration Release --no-restore --framework net8.0-windows10.0.19041.0 /p:RuntimeIdentifier=win10-x64
+
+      - name: Voer unit tests uit en genereer rapport
+        run: dotnet test --configuration Release --verbosity normal --results-directory "TestResults" --logger "trx;LogFileName=testresults.trx"
+
+      - name: Upload test resultaten
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/testresults.trx
