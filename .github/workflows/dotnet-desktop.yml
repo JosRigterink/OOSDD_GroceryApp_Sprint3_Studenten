@@ -19,7 +19,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest  # Veranderd van macOS-latest naar windows-latest
+    runs-on: windows-latest
     steps:
       - name: Haal de repository op
         uses: actions/checkout@v4
@@ -33,11 +33,10 @@ jobs:
         run: dotnet workload install maui
 
       - name: Herstel afhankelijkheden
-        run: dotnet restore
+        # Voeg de RuntimeIdentifier toe aan de dotnet restore stap
+        run: dotnet restore Grocery.App/Grocery.App.csproj --runtime win10-x64
 
       - name: Bouw de applicatie
-        # Voor Windows kun je bouwen voor net8.0-windows of net8.0-android/ios als je specifieke platforms wilt testen.
-        # Hier kiezen we voor net8.0-windows. Pas dit aan als je een ander doelplatform hebt.
         run: dotnet build Grocery.App/Grocery.App.csproj --configuration Release --no-restore --framework net8.0-windows10.0.19041.0 /p:RuntimeIdentifier=win10-x64
 
       - name: Voer unit tests uit en genereer rapport
